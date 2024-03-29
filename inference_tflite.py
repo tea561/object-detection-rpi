@@ -29,7 +29,6 @@ height = 240
 bytes_per_pixel = 2
 bytes_per_frame = width * height * bytes_per_pixel
 
-image_path = 'frame_0497.jpg'
 
 interpreter = tf.lite.Interpreter(model_path='lite1-detection-default.tflite')
 
@@ -62,7 +61,7 @@ def run_inference(image):
     start_time = time.time()
     interpreter.invoke()
     end_time = time.time()
-      
+
     inference_time = (end_time - start_time) * 1000
     print("Inference time: ", inference_time, "ms")
 
@@ -87,7 +86,7 @@ def run_inference(image):
             image = cv2.rectangle(image, (x0, y0), (x1, y1), (255, 0, 0), 1)
 
     current_time = time.strftime('%Y%m%d%H%M%S')
-    img_name = f"image_{current_time}.jpg"
+    img_name = f"./results/image_{current_time}.jpg"
     cv2.imwrite(img_name, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))        
             
 app = App()
@@ -96,8 +95,15 @@ print("Running")
 
 while True:
 
-    data_str = serial_readline()
-    print(str(data_str))
+    data_str = b"0x82"
+    while data_str != "<image>":
+        data_str = ser.readline()
+        try:
+            data_str = data_str.decode('utf-8').strip()
+        except UnicodeDecodeError:
+        # Handle non-UTF-8 data differently
+        # For example:
+            data_str = ser.readline()
 
     if str(data_str) == "<image>":
         print("Reading frame")

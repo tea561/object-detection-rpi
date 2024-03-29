@@ -29,8 +29,8 @@ bytes_per_pixel = 2
 bytes_per_frame = width * height * bytes_per_pixel
 
 
-model_file = './model.eim'
-image_path = 'frame_0497.jpg'
+model_file = './modelfile.eim'
+image_path = 'test7.png'
 
 def serial_readline():
     data = ser.readline()
@@ -51,16 +51,16 @@ def run_inference(image):
                 print('Loaded runner for "' + model_info['project']['owner'] + ' / ' + model_info['project']['name'] + '"')
                 labels = model_info['model_parameters']['labels']
 
-                # img = cv2.imread(image_path)
+                # img = cv2.imread(image)
                 # if img is None:
-                #     print('Failed to load image', image_path)
+                #     print('Failed to load image', image)
                 #     exit(1)
 
                 # # imread returns images in BGR format, so we need to convert to RGB
                 # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-                # print(img.shape)
-                # print(type(img[0,0,0]))
+                # # print(img.shape)
+                # # print(type(img[0,0,0]))
 
                 # get_features_from_image also takes a crop direction arguments in case you don't have square images
                 features, cropped = runner.get_features_from_image(image)
@@ -77,6 +77,7 @@ def run_inference(image):
                 elif "bounding_boxes" in res["result"].keys():
                     print('Found %d bounding boxes (%d ms.)' % (len(res["result"]["bounding_boxes"]), res['timing']['dsp'] + res['timing']['classification']))
                     for bb in res["result"]["bounding_boxes"]:
+                        ## TODO :check score 
                         print('\t%s (%.2f): x=%d y=%d w=%d h=%d' % (bb['label'], bb['value'], bb['x'], bb['y'], bb['width'], bb['height']))
                         cropped = cv2.rectangle(cropped, (bb['x'], bb['y']), (bb['x'] + bb['width'], bb['y'] + bb['height']), (255, 0, 0), 1)
 
@@ -84,7 +85,7 @@ def run_inference(image):
                 # so you can see what's being passed into the classifier
                         
                 current_time = time.strftime('%Y%m%d%H%M%S')
-                img_name = f"image_{current_time}.jpg"
+                img_name = f"./results/image_{current_time}.jpg"
                 cv2.imwrite(img_name, cv2.cvtColor(cropped, cv2.COLOR_RGB2BGR))
 
             finally:
@@ -97,8 +98,15 @@ print("Running")
 
 while True:
 
-    data_str = serial_readline()
-    print(str(data_str))
+    data_str = b"0x82"
+    while data_str != "<image>":
+        data_str = ser.readline()
+        try:
+            data_str = data_str.decode('utf-8').strip()
+        except UnicodeDecodeError:
+        # Handle non-UTF-8 data differently
+        # For example:
+            data_str = ser.readline()
 
     if str(data_str) == "<image>":
         print("Reading frame")
@@ -123,4 +131,4 @@ while True:
             label.place(x=0, y=0)
         else:
             print("Error: Unable to capture image")
-                    
+    
