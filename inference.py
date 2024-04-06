@@ -13,7 +13,6 @@ from PIL import Image, ImageTk
 from tkinter_app import *
 
 
-
 port = '/dev/ttyACM0'
 baudrate = 115600
 # Initialize serial port
@@ -51,18 +50,6 @@ def run_inference(image):
                 print('Loaded runner for "' + model_info['project']['owner'] + ' / ' + model_info['project']['name'] + '"')
                 labels = model_info['model_parameters']['labels']
 
-                # img = cv2.imread(image)
-                # if img is None:
-                #     print('Failed to load image', image)
-                #     exit(1)
-
-                # # imread returns images in BGR format, so we need to convert to RGB
-                # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-                # # print(img.shape)
-                # # print(type(img[0,0,0]))
-
-                # get_features_from_image also takes a crop direction arguments in case you don't have square images
                 features, cropped = runner.get_features_from_image(image)
 
                 res = runner.classify(features)
