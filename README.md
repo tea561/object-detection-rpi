@@ -1,5 +1,18 @@
-# object-detection-rpi
-# RPi4
+# Object detection on edge devices
+# Arduino Nano 33 BLE Sense
+### Connect board to Edge Impulse
+- Download the [Edge Impulse firmware](https://cdn.edgeimpulse.com/firmware/arduino-nano-33-ble-sense.zip) 
+- Flash the firmware
+- Run ```edge-impulse-daemon```
+
+### Using model
+After training model on Edge Impulse, download binary containing both the Edge Impulse data acquisition client and full impulse. Flash the firmware onto the board and execute the following command:
+```
+edge-impulse-run-impulse --debug
+```
+Real-time object detection can be observed via web browser.
+
+# Raspberry Pi 4
 ### Installing dependencies for Edge Impulse
 ```
 sudo apt update
@@ -15,13 +28,15 @@ npm config set user root && sudo npm install edge-impulse-linux -g --unsafe-perm
 
 ### Build and run object detection program
 ```
+cd ./image-object-detection
 make -j 4
 ./build/app test_sample.jpg
 ```
 
 ## 2. Video object detection
+Arduino Nano 33 BLE Sense captures frames using an attached camera module and transmitting them to the Raspberry Pi. Upload the ```./arduino/rgb565.ino``` sketch onto the Arduino board to enable this transmission.
 
-### Requirements:
+### RPi Requirements:
 - Python 3 (>= 3.7)
 
 ### Install packages
