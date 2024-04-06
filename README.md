@@ -1,7 +1,7 @@
 # Object detection on edge devices
 # Arduino Nano 33 BLE Sense
 ### Connect board to Edge Impulse
-- Download [Edge Impulse firmware](https://cdn.edgeimpulse.com/firmware/arduino-nano-33-ble-sense.zip) 
+- Download the [Edge Impulse firmware](https://cdn.edgeimpulse.com/firmware/arduino-nano-33-ble-sense.zip) 
 - Flash the firmware
 - Run ```edge-impulse-daemon```
 
